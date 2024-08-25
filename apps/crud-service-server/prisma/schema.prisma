@@ -1,0 +1,94 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt    DateTime      @default(now())
+  email        String?       @unique
+  firstName    String?
+  id           String        @id @default(cuid())
+  idUser       Int?
+  lastName     String?
+  namaUser     String?
+  password     String
+  role         String?
+  roles        Json
+  transactions Transaction[]
+  updatedAt    DateTime      @updatedAt
+  username     String        @unique
+  visits       Visit[]
+}
+
+model Visit {
+  createdAt        DateTime  @default(now())
+  id               String    @id @default(cuid())
+  idKunjungan      Int?
+  idToko           String?
+  idUser           String?
+  samples          Sample[]
+  store            Store?    @relation(fields: [storeId], references: [id])
+  storeId          String?
+  tanggalKunjungan DateTime?
+  updatedAt        DateTime  @updatedAt
+  user             User?     @relation(fields: [userId], references: [id])
+  userId           String?
+  waktuMulai       DateTime?
+  waktuSelesai     DateTime?
+}
+
+model Store {
+  createdAt    DateTime      @default(now())
+  id           String        @id @default(cuid())
+  idToko       Int?
+  namaToko     String?
+  transactions Transaction[]
+  updatedAt    DateTime      @updatedAt
+  visits       Visit[]
+}
+
+model Sample {
+  createdAt   DateTime @default(now())
+  deskripsi   String?
+  id          String   @id @default(cuid())
+  idKunjungan String?
+  idSample    Int?
+  namaSample  String?
+  updatedAt   DateTime @updatedAt
+  visit       Visit?   @relation(fields: [visitId], references: [id])
+  visitId     String?
+}
+
+model Transaction {
+  createdAt        DateTime  @default(now())
+  id               String    @id @default(cuid())
+  idToko           String?
+  idTransaksi      Int?
+  idUser           String?
+  statusOrder      String?
+  store            Store?    @relation(fields: [storeId], references: [id])
+  storeId          String?
+  tanggalTransaksi DateTime?
+  tipePembayaran   String?
+  updatedAt        DateTime  @updatedAt
+  user             User?     @relation(fields: [userId], references: [id])
+  userId           String?
+}
+
+model SalesRole {
+  changeOrderStatus Boolean?
+  createdAt         DateTime @default(now())
+  id                String   @id @default(cuid())
+  updatedAt         DateTime @updatedAt
+}
+
+model CustomerServiceRole {
+  changeOrderStatus Boolean?
+  createdAt         DateTime @default(now())
+  id                String   @id @default(cuid())
+  updatedAt         DateTime @updatedAt
+}
